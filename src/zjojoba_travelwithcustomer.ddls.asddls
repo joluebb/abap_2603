@@ -7,9 +7,14 @@
 @Metadata.ignorePropagatedAnnotations: false
 
 define view entity ZJOJOBA_TravelWithCustomer
-  as select from ZJOJOBA_Travel   as t
+  as select from ZJOJOBA_Travel                   as t
 
-    inner join   ZJOJOBA_Customer as c on t.CustomerId = c.CustomerId
+    inner join   ZJOJOBA_Customer                 as c
+      on t.CustomerId = c.CustomerId
+
+    inner join   DDCDS_CUSTOMER_DOMAIN_VALUE_T(
+                   p_domain_name : '/DMO/STATUS') as d
+      on d.value_low = t.Status and d.language = $session.system_language
 
 {
   key t.TravelId,
@@ -20,7 +25,7 @@ define view entity ZJOJOBA_TravelWithCustomer
 
       @EndUserText.label: 'Duration'
       @EndUserText.quickInfo: 'Duration of the travel'
-      dats_days_between(t.BeginDate, t.EndDate) + 1                                    as Duration,
+      dats_days_between(t.BeginDate, t.EndDate) + 1                                as Duration,
 
       @Semantics.amount.currencyCode: 'CurrencyCode'
       currency_conversion(amount             => t.BookingFee,
@@ -39,11 +44,7 @@ define view entity ZJOJOBA_TravelWithCustomer
       cast('EUR' as /dmo/currency_code)                                            as CurrencyCode,
       t.Description,
       t.Status,
-      case t.Status when 'N' then 'Normal'
-                    when 'P' then 'Pending'
-                    when 'B' then 'Boarding'
-                    else 'Error'
-      end as StatusText,
+      d.text                                                                       as StatusText,
       c.CustomerId,
 
       @EndUserText.label: 'Customer Name'
