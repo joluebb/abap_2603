@@ -13,17 +13,15 @@ ENDCLASS.
 
 
 CLASS zcl_jojoba_demo_01 IMPLEMENTATION.
-
-
   METHOD if_oo_adt_classrun~main.
+    DATA travels TYPE TABLE OF /DMO/C_Booking_Approver_M.
 
-  DATA travels TYPE TABLE of /DMO/I_TRAVEL_D.
+    SELECT FROM /DMO/C_Booking_Approver_M
+      FIELDS *
+      WHERE CarrierID = 'LH' AND ConnectionID = 0400
+      INTO TABLE @travels.
 
-  SELECT FROM /DMO/I_TRAVEL_D
-   FIELDS *
-   into table @travels.
 
-   out->write( travels ).
-
+    out->write( travels ).
   ENDMETHOD.
 ENDCLASS.
