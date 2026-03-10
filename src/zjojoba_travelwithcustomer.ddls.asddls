@@ -27,6 +27,8 @@ define view entity ZJOJOBA_TravelWithCustomer
       @EndUserText.quickInfo: 'Duration of the travel'
       dats_days_between(t.BeginDate, t.EndDate) + 1                                as Duration,
 
+      @EndUserText.label: 'Booking Fee'
+      @EndUserText.quickInfo: 'Booking Fee'
       @Semantics.amount.currencyCode: 'CurrencyCode'
       currency_conversion(amount             => t.BookingFee,
                           source_currency    => t.CurrencyCode,
@@ -34,16 +36,22 @@ define view entity ZJOJOBA_TravelWithCustomer
                           exchange_rate_date => $session.system_date,
                           error_handling     => 'KEEP_UNCONVERTED')                as BookingFee,
 
+      @EndUserText.label: 'Total Price'
+      @EndUserText.quickInfo: 'Total Price'
       @Semantics.amount.currencyCode: 'CurrencyCode'
       currency_conversion(amount             => t.TotalPrice,
                           source_currency    => t.CurrencyCode,
                           target_currency    => cast('EUR' as /dmo/currency_code),
                           exchange_rate_date => $session.system_date,
                           error_handling     => 'KEEP_UNCONVERTED')                as TotalPrice,
-
+                          
+      @EndUserText.label: 'Currency Code'
+      @EndUserText.quickInfo: 'Currency Code'
       cast('EUR' as /dmo/currency_code)                                            as CurrencyCode,
       t.Description,
       t.Status,
+      @EndUserText.label: 'Status Text'
+      @EndUserText.quickInfo: 'Status Text'
       d.text                                                                       as StatusText,
       c.CustomerId,
 
