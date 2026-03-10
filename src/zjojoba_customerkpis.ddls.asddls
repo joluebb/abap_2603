@@ -6,11 +6,13 @@
 
 @Metadata.ignorePropagatedAnnotations: false
 
-define view entity ZJOJOBA_CustomerKPIs with parameters CityID : abap.char(40)
+define view entity ZJOJOBA_CustomerKPIs
+  with parameters
+    P_CityID : abap.char(40)
+
   as select from ZJOJOBA_TravelWithCustomer as t
 
 {
-
   key t.CustomerId,
 
       t.CustomerName,
@@ -21,17 +23,21 @@ define view entity ZJOJOBA_CustomerKPIs with parameters CityID : abap.char(40)
       @EndUserText.label: 'Total Revenue'
       @EndUserText.quickInfo: 'Total Revenue'
       @Semantics.amount.currencyCode: 'CurrencyCode'
-      sum(t.TotalPrice + t.BookingFee)                 as TotalRevenue,
+      sum(t.TotalPrice + t.BookingFee)  as TotalRevenue,
 
       t.CurrencyCode,
+
       @EndUserText.label: 'Average Duration'
       @EndUserText.quickInfo: 'Average Duration'
       avg(t.Duration as abap.dec(16,2)) as AverageDuration,
+
       @EndUserText.label: 'Number of different Agencies'
       @EndUserText.quickInfo: 'Number of different Agencies'
       count(distinct t.AgencyId)        as NumberOfDifferentAgencies
 }
-where t.City = $parameters.CityID
+
+where t.City = $parameters.P_CityID
+
 group by t.CustomerId,
          t.CustomerName,
          t.Street,

@@ -9,10 +9,10 @@
 define view entity ZJOJOBA_TravelWithCustomer
   as select from ZJOJOBA_Travel                   as t
 
-    inner join   ZJOJOBA_Customer                 as c
+    left outer join   ZJOJOBA_Customer                 as c
       on t.CustomerId = c.CustomerId
 
-    inner join   DDCDS_CUSTOMER_DOMAIN_VALUE_T(
+    left outer join   DDCDS_CUSTOMER_DOMAIN_VALUE_T(
                    p_domain_name : '/DMO/STATUS') as d
       on d.value_low = t.Status and d.language = $session.system_language
 
